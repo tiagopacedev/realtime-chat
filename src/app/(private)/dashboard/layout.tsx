@@ -6,9 +6,13 @@ import Image from 'next/image'
 import { MessageCircleMore } from 'lucide-react'
 
 import { authOptions } from '@/lib/auth'
+import { fetchRedis } from '@/helpers/redis'
+import { getFriendsByUserId } from '@/helpers/get-friends-by-user-id'
+
 import { Icons, type Icon } from '@/components/icons'
 import SignOutButton from '@/components/sign-out-button'
 import FriendRequestSidebarOptions from '@/components/friend-request-sidebar-options'
+import ChatList from '@/components/chat-list'
 
 interface LayoutProps {
   children: ReactNode
@@ -39,6 +43,8 @@ const Layout = async ({ children }: LayoutProps) => {
   const session = await getServerSession(authOptions)
   if (!session) notFound()
 
+  const friends = await getFriendsByUserId(session.user.id)
+
   const unseenRequestCount = (
     (await fetchRedis('smembers', `user:${session.user.id}:incoming_friend_requests`)) as User[]
   ).length
@@ -54,11 +60,15 @@ const Layout = async ({ children }: LayoutProps) => {
           Talkie
         </Link>
 
-        <div className="text-xs font-semibold leading-6 text-gray-400">Your chats</div>
+        {friends.length > 0 && (
+          <div className="text-xs font-semibold leading-6 text-gray-400">Your chats</div>
+        )}
 
         <nav className="flex flex-1 flex-col">
           <ul role="list" className="flex flex-1 flex-col gap-y-7">
-            <li>{/* {Chat List} */}</li>
+            <li>
+              <ChatList friends={friends} sessionId={session.user.id} />
+            </li>
             <li>
               <div className="text-xs font-semibold leading-6 text-gray-400">Overview</div>
 
