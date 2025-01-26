@@ -39,6 +39,10 @@ const Layout = async ({ children }: LayoutProps) => {
   const session = await getServerSession(authOptions)
   if (!session) notFound()
 
+  const unseenRequestCount = (
+    (await fetchRedis('smembers', `user:${session.user.id}:incoming_friend_requests`)) as User[]
+  ).length
+
   return (
     <div className="flex h-screen w-full">
       <div className="flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white p-6">
@@ -77,7 +81,9 @@ const Layout = async ({ children }: LayoutProps) => {
                   )
                 })}
 
-                <li>{/* {Friend Request} */}</li>
+                <li>
+                  <FriendRequestSidebarOptions initialUnseenRequestCount={unseenRequestCount} />
+                </li>
               </ul>
             </li>
 
