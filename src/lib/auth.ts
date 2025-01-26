@@ -1,3 +1,4 @@
+import { fetchRedis } from '@/helpers/redis'
 import { db } from '@/lib/db'
 import { UpstashRedisAdapter } from '@auth/upstash-redis-adapter'
 import { type NextAuthOptions } from 'next-auth'
@@ -34,25 +35,24 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      const dbUserResult = (await db.get(`user:${token.id}`)) as string | null
+      const dbUserResult = (await fetchRedis('get', `user:${token.id}`)) as string | null
 
-      // If dbUserResult exists and is a string, parse it
-      if (dbUserResult && typeof dbUserResult === 'string') {
-        const dbUser = JSON.parse(dbUserResult) as User
-        return {
-          id: dbUser.id,
-          name: dbUser.name,
-          email: dbUser.email,
-          picture: dbUser.image,
+      if (!dbUserResult) {
+        if (user) {
+          token.id = user!.id
         }
+
+        return token
       }
 
-      // If there's no dbUserResult, or it's an object, just update the token
-      if (user) {
-        token.id = user.id
-      }
+      const dbUser = JSON.parse(dbUserResult) as User
 
-      return token
+      return {
+        id: dbUser.id,
+        name: dbUser.name,
+        email: dbUser.email,
+        picture: dbUser.image,
+      }
     },
     async session({ session, token }) {
       if (token) {
@@ -64,7 +64,6 @@ export const authOptions: NextAuthOptions = {
 
       return session
     },
-
     redirect() {
       return '/dashboard'
     },
