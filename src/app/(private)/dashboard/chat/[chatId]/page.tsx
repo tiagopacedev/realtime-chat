@@ -44,8 +44,8 @@ export default async function Page({ params }: ChatProps) {
   }
 
   const chatPartnerId = user.id === userId1 ? userId2 : userId1
-  const chatPartnerRaw = (await fetchRedis('get', `user:${chatPartnerId}`)) as string
 
+  const chatPartnerRaw = (await fetchRedis('get', `user:${chatPartnerId}`)) as string
   const chatPartner = JSON.parse(chatPartnerRaw) as User
   const initialMessages = await getChatMessages(chatId)
 
@@ -76,6 +76,7 @@ export default async function Page({ params }: ChatProps) {
       </div>
 
       <Messages
+        chatId={chatId}
         chatPartner={chatPartner}
         sessionImg={session.user.image}
         sessionId={session.user.id}

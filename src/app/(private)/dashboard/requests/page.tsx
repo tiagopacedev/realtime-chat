@@ -29,7 +29,10 @@ export default async function Page() {
     <main className="p-8">
       <h1 className="mb-8 text-3xl font-bold">Requests</h1>
       <div className="flex flex-col gap-4">
-        <FriendRequests incomingFriendRequests={incomingFriendRequests} />
+        <FriendRequests
+          incomingFriendRequests={incomingFriendRequests}
+          sessionId={session.user.id}
+        />
       </div>
     </main>
   )

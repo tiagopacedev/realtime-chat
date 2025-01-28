@@ -3,6 +3,8 @@ import { z } from 'zod'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { fetchRedis } from '@/helpers/redis'
+import { pusherServer } from '@/lib/pusher'
+import { toPusherKey } from '@/lib/utils'
 
 export async function POST(req: Request) {
   try {
@@ -37,8 +39,19 @@ export async function POST(req: Request) {
       return new Response('No friend request', { status: 400 })
     }
 
-    // Add the user to each other's friends list and remove the incoming friend request
+    const [userRaw, friendRaw] = (await Promise.all([
+      fetchRedis('get', `user:${session.user.id}`),
+      fetchRedis('get', `user:${idToAdd}`),
+    ])) as [string, string]
+
+    const user = JSON.parse(userRaw) as User
+    const friend = JSON.parse(friendRaw) as User
+
+    // Notify the added user and update the friend lists of both users in the database
     await Promise.all([
+      pusherServer.trigger(toPusherKey(`user:${idToAdd}:friends`), 'new_friend', user),
+      pusherServer.trigger(toPusherKey(`user:${session.user.id}:friends`), 'new_friend', friend),
+
       db.sadd(`user:${session.user.id}:friends`, idToAdd),
       db.sadd(`user:${idToAdd}:friends`, session.user.id),
       db.srem(`user:${session.user.id}:incoming_friend_requests`, idToAdd),

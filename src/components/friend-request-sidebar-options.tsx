@@ -1,7 +1,10 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { User } from 'lucide-react'
+import { pusherClient } from '@/lib/pusher'
+import { toPusherKey } from '@/lib/utils'
 
 interface FriendRequestSidebarOptionsProps {
   sessionId: string
@@ -9,8 +12,41 @@ interface FriendRequestSidebarOptionsProps {
 }
 
 export default function FriendRequestSidebarOptions({
+  sessionId,
   initialUnseenRequestCount,
 }: FriendRequestSidebarOptionsProps) {
+  const [unseenRequestCount, setUnseenRequestCount] = useState<number>(initialUnseenRequestCount)
+
+  useEffect(() => {
+    pusherClient.subscribe(toPusherKey(`user:${sessionId}:incoming_friend_requests`))
+    pusherClient.subscribe(toPusherKey(`user:${sessionId}:friends`))
+
+    const friendRequestHandler = () => {
+      setUnseenRequestCount((prev) => prev + 1)
+    }
+
+    const addedFriendHandler = () => {
+      setUnseenRequestCount((prev) => prev - 1)
+    }
+
+    const denyRequestHandler = () => {
+      setUnseenRequestCount((prev) => (prev > 0 ? prev - 1 : 0))
+    }
+
+    pusherClient.bind('incoming_friend_requests', friendRequestHandler)
+    pusherClient.bind('new_friend', addedFriendHandler)
+    pusherClient.bind('deny_request', denyRequestHandler)
+
+    return () => {
+      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:incoming_friend_requests`))
+      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`))
+
+      pusherClient.unbind('new_friend', addedFriendHandler)
+      pusherClient.unbind('incoming_friend_requests', friendRequestHandler)
+      pusherClient.unbind('deny_request', denyRequestHandler)
+    }
+  }, [sessionId])
+
   return (
     <Link
       href="/dashboard/requests"
@@ -21,9 +57,9 @@ export default function FriendRequestSidebarOptions({
       </div>
 
       <p className="truncate">Friend requests</p>
-      {initialUnseenRequestCount > 0 && (
+      {unseenRequestCount > 0 && (
         <div className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">
-          {initialUnseenRequestCount}
+          {unseenRequestCount}
         </div>
       )}
     </Link>

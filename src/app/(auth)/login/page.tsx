@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
-import { toast } from 'sonner'
+import toast from 'react-hot-toast'
 import { LoaderCircle } from 'lucide-react'
 
 export default function Page() {

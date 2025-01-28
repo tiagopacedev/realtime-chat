@@ -92,7 +92,10 @@ const Layout = async ({ children }: LayoutProps) => {
                 })}
 
                 <li>
-                  <FriendRequestSidebarOptions initialUnseenRequestCount={unseenRequestCount} />
+                  <FriendRequestSidebarOptions
+                    sessionId={session.user.id}
+                    initialUnseenRequestCount={unseenRequestCount}
+                  />
                 </li>
               </ul>
             </li>
@@ -112,7 +115,10 @@ const Layout = async ({ children }: LayoutProps) => {
                 <span className="sr-only">Your profile</span>
                 <div className="flex flex-col">
                   <span aria-hidden="true">{session.user.name}</span>
-                  <span className="text-xs text-zinc-400" aria-hidden="true">
+                  <span
+                    className="max-w-[170px] overflow-hidden truncate text-xs text-zinc-400"
+                    aria-hidden="true"
+                  >
                     {session.user.email}
                   </span>
                 </div>
