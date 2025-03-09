@@ -3,7 +3,7 @@ import NextAuth from 'next-auth'
 import authConfig from './auth.config'
 import { UpstashRedisAdapter } from '@auth/upstash-redis-adapter'
 import { db } from './lib/db'
-import { fetchRedis } from './helpers/redis'
+import { fetchRedis } from './lib/redis'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: UpstashRedisAdapter(db),

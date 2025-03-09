@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { fetchRedis } from '@/helpers/redis'
+import { fetchRedis } from '@/lib/redis'
 import { getFriendsByUserId } from '@/helpers/get-friends-by-user-id'
 
 import { chatHrefConstructor } from '@/lib/utils'

@@ -1,4 +1,4 @@
-import { fetchRedis } from '@/helpers/redis'
+import { fetchRedis } from '@/lib/redis'
 import { getCurrentUser } from '@/lib/auth'
 
 import { db } from '@/lib/db'

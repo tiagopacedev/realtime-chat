@@ -2,7 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 
-import { fetchRedis } from '@/helpers/redis'
+import { fetchRedis } from '@/lib/redis'
 import { messageArrayValidator } from '@/lib/validations/message'
 
 import ChatInput from '@/components/chat-input'

@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { MessageCircleMore } from 'lucide-react'
 
-import { fetchRedis } from '@/helpers/redis'
+import { fetchRedis } from '@/lib/redis'
 import { getFriendsByUserId } from '@/helpers/get-friends-by-user-id'
 
 import { Icons, type Icon } from '@/components/icons'

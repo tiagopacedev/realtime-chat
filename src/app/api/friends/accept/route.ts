@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import { db } from '@/lib/db'
-import { fetchRedis } from '@/helpers/redis'
+import { fetchRedis } from '@/lib/redis'
 import { pusherServer } from '@/lib/pusher'
 import { toPusherKey } from '@/lib/utils'
 import { getCurrentUser } from '@/lib/auth'

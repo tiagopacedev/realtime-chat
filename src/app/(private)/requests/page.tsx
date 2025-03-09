@@ -1,5 +1,5 @@
 import FriendRequests from '@/components/friend-requests'
-import { fetchRedis } from '@/helpers/redis'
+import { fetchRedis } from '@/lib/redis'
 import { getCurrentUser } from '@/lib/auth'
 import { notFound } from 'next/navigation'
 
