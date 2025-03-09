@@ -1,19 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import type { Session, User } from 'next-auth'
-import type { JWT } from 'next-auth/jwt'
+import NextAuth, { type DefaultSession } from 'next-auth'
 
-type UserId = string
-
-declare module 'next-auth/jwt' {
-  interface JWT {
-    id: UserId
-  }
+export type ExtendedUser = DefaultSession['user'] & {
+  id: string
+  email: string
 }
 
 declare module 'next-auth' {
   interface Session {
-    user: User & {
-      id: UserId
-    }
+    user: ExtendedUser
   }
 }

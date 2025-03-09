@@ -49,7 +49,7 @@ export default function FriendRequestSidebarOptions({
 
   return (
     <Link
-      href="/dashboard/requests"
+      href="/requests"
       className="group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
     >
       <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-[0.625rem] font-medium text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600">

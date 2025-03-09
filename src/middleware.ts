@@ -1,46 +1,45 @@
-import { getToken } from 'next-auth/jwt'
-import { withAuth } from 'next-auth/middleware'
-import { NextResponse } from 'next/server'
+import { type MiddlewareConfig, NextResponse } from 'next/server'
+import NextAuth from 'next-auth'
+import authConfig from './auth.config'
 
-export default withAuth(
-  async function middleware(req) {
-    const pathname = req.nextUrl.pathname
+const { auth } = NextAuth(authConfig)
 
-    // Manage route protection
-    const isAuth = await getToken({ req })
-    const isLoginPage = pathname.startsWith('/login')
+const publicRoutes = [{ path: '/login', whenAuthenticated: 'redirect' }] as const
+const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = '/login'
 
-    const sensitiveRoutes = ['/dashboard']
-    const isAccessingSensitiveRoute = sensitiveRoutes.some((route) => pathname.startsWith(route))
+export default auth((request) => {
+  const path = request.nextUrl.pathname
+  const publicRoute = publicRoutes.find((route) => route.path === path)
+  const isAuthenticated = !!request.auth
 
-    // Redirect to dashboard if user is authenticated and trying to access login page
-    if (isLoginPage && isAuth) {
-      return NextResponse.redirect(new URL('/dashboard', req.url))
-    }
-
-    // Redirect to login if user is not authenticated and trying to access a sensitive route
-    if (!isAuth && isAccessingSensitiveRoute) {
-      return NextResponse.redirect(new URL('/login', req.url))
-    }
-
-    // Redirect from home page to dashboard if the user is authenticated
-    if (pathname === '/' && isAuth) {
-      return NextResponse.redirect(new URL('/dashboard', req.url))
-    }
-
-    // Allow the request to proceed if no conditions are met
+  if (!isAuthenticated && publicRoute) {
     return NextResponse.next()
-  },
-  {
-    callbacks: {
-      async authorized() {
-        // Authorization callback, allow all requests for now
-        return true
-      },
-    },
-  },
-)
+  }
 
-export const config = {
-  matcher: ['/', '/login', '/dashboard/:path*'],
+  if (!isAuthenticated && !publicRoute) {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  if (isAuthenticated && publicRoute?.whenAuthenticated === 'redirect') {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/'
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  return NextResponse.next()
+})
+
+export const config: MiddlewareConfig = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+  ],
 }

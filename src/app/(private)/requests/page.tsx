@@ -1,11 +1,10 @@
+import { auth } from '@/auth'
 import FriendRequests from '@/components/friend-requests'
 import { fetchRedis } from '@/helpers/redis'
 import { notFound } from 'next/navigation'
-import { authOptions } from '@/lib/auth'
-import { getServerSession } from 'next-auth'
 
 export default async function Page() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   if (!session) notFound()
 
   const incomingSenderIds = (await fetchRedis(

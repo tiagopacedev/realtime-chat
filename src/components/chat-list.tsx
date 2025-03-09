@@ -32,8 +32,7 @@ export default function ChatList({ friends, sessionId }: ChatListProps) {
     }
 
     const chatHandler = (message: ExtendedMessage) => {
-      const shouldNotify =
-        pathname !== `/dashboard/chat/${chatHrefConstructor(sessionId, message.senderId)}`
+      const shouldNotify = pathname !== `/chat/${chatHrefConstructor(sessionId, message.senderId)}`
 
       if (!shouldNotify) return
 
@@ -81,7 +80,7 @@ export default function ChatList({ friends, sessionId }: ChatListProps) {
         return (
           <li key={friend.id}>
             <a
-              href={`/dashboard/chat/${chatHrefConstructor(sessionId, friend.id)}`}
+              href={`/chat/${chatHrefConstructor(sessionId, friend.id)}`}
               className="group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
             >
               {friend.name}

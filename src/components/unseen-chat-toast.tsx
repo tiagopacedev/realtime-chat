@@ -28,7 +28,7 @@ export default function UnseenChatToast({
     >
       <a
         onClick={() => toast.dismiss(t.id)}
-        href={`/dashboard/chat/${chatHrefConstructor(sessionId, senderId)}`}
+        href={`/chat/${chatHrefConstructor(sessionId, senderId)}`}
         className="w-0 flex-1 p-4"
       >
         <div className="flex items-start">

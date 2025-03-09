@@ -1,14 +1,13 @@
 import React from 'react'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { getServerSession } from 'next-auth'
 
-import { authOptions } from '@/lib/auth'
 import { fetchRedis } from '@/helpers/redis'
 import { messageArrayValidator } from '@/lib/validations/message'
 
 import ChatInput from '@/components/chat-input'
 import Messages from '@/components/messages'
+import { auth } from '@/auth'
 
 interface ChatProps {
   params: {
@@ -31,7 +30,7 @@ async function getChatMessages(chatId: string) {
 
 export default async function Page({ params }: ChatProps) {
   const { chatId } = params
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   if (!session) notFound()
 
   const { user } = session

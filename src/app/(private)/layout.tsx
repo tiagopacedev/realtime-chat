@@ -1,11 +1,10 @@
 import { ReactNode } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { getServerSession } from 'next-auth'
+
 import Image from 'next/image'
 import { MessageCircleMore } from 'lucide-react'
 
-import { authOptions } from '@/lib/auth'
 import { fetchRedis } from '@/helpers/redis'
 import { getFriendsByUserId } from '@/helpers/get-friends-by-user-id'
 
@@ -13,6 +12,8 @@ import { Icons, type Icon } from '@/components/icons'
 import SignOutButton from '@/components/sign-out-button'
 import FriendRequestSidebarOptions from '@/components/friend-request-sidebar-options'
 import ChatList from '@/components/chat-list'
+import BottomNavigation from '@/components/bottom-navigation'
+import { auth } from '@/auth'
 
 interface LayoutProps {
   children: ReactNode
@@ -34,13 +35,13 @@ const sidebarOptions: SidebarOption[] = [
   {
     id: 1,
     name: 'Add friend',
-    href: '/dashboard/add',
+    href: '/add',
     Icon: 'UserPlus',
   },
 ]
 
 const Layout = async ({ children }: LayoutProps) => {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   if (!session) notFound()
 
   const friends = await getFriendsByUserId(session.user.id)
@@ -53,7 +54,7 @@ const Layout = async ({ children }: LayoutProps) => {
     <div className="flex h-screen w-full">
       <div className="flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white p-6">
         <Link
-          href="/dashboard"
+          href="/"
           className="flex h-16 shrink-0 items-center gap-2 text-2xl font-semibold leading-6 text-indigo-600"
         >
           <MessageCircleMore className="h-8 w-auto text-indigo-600" />
@@ -69,6 +70,7 @@ const Layout = async ({ children }: LayoutProps) => {
             <li>
               <ChatList friends={friends} sessionId={session.user.id} />
             </li>
+
             <li>
               <div className="text-xs font-semibold leading-6 text-gray-400">Overview</div>
 
@@ -129,6 +131,7 @@ const Layout = async ({ children }: LayoutProps) => {
           </ul>
         </nav>
       </div>
+      <BottomNavigation />
 
       <aside className="max-h-screen w-full">{children}</aside>
     </div>
