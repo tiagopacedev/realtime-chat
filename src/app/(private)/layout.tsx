@@ -13,7 +13,7 @@ import SignOutButton from '@/components/sign-out-button'
 import FriendRequestSidebarOptions from '@/components/friend-request-sidebar-options'
 import ChatList from '@/components/chat-list'
 import BottomNavigation from '@/components/bottom-navigation'
-import { auth } from '@/auth'
+import { getCurrentUser } from '@/lib/auth'
 
 interface LayoutProps {
   children: ReactNode
@@ -41,13 +41,13 @@ const sidebarOptions: SidebarOption[] = [
 ]
 
 const Layout = async ({ children }: LayoutProps) => {
-  const session = await auth()
-  if (!session) notFound()
+  const user = await getCurrentUser()
+  if (!user) notFound()
 
-  const friends = await getFriendsByUserId(session.user.id)
+  const friends = await getFriendsByUserId(user.id)
 
   const unseenRequestCount = (
-    (await fetchRedis('smembers', `user:${session.user.id}:incoming_friend_requests`)) as User[]
+    (await fetchRedis('smembers', `user:${user.id}:incoming_friend_requests`)) as User[]
   ).length
 
   return (
@@ -68,7 +68,7 @@ const Layout = async ({ children }: LayoutProps) => {
         <nav className="flex flex-1 flex-col">
           <ul role="list" className="flex flex-1 flex-col gap-y-7">
             <li>
-              <ChatList friends={friends} sessionId={session.user.id} />
+              <ChatList friends={friends} sessionId={user.id} />
             </li>
 
             <li>
@@ -95,7 +95,7 @@ const Layout = async ({ children }: LayoutProps) => {
 
                 <li>
                   <FriendRequestSidebarOptions
-                    sessionId={session.user.id}
+                    sessionId={user.id}
                     initialUnseenRequestCount={unseenRequestCount}
                   />
                 </li>
@@ -109,19 +109,19 @@ const Layout = async ({ children }: LayoutProps) => {
                     fill
                     referrerPolicy="no-referrer"
                     className="rounded-full"
-                    src={session.user.image || ''}
+                    src={user.image || ''}
                     alt="Your profile picture"
                   />
                 </div>
 
                 <span className="sr-only">Your profile</span>
                 <div className="flex flex-col">
-                  <span aria-hidden="true">{session.user.name}</span>
+                  <span aria-hidden="true">{user.name}</span>
                   <span
                     className="max-w-[170px] overflow-hidden truncate text-xs text-zinc-400"
                     aria-hidden="true"
                   >
-                    {session.user.email}
+                    {user.email}
                   </span>
                 </div>
               </div>

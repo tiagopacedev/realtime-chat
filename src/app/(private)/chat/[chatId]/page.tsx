@@ -7,7 +7,7 @@ import { messageArrayValidator } from '@/lib/validations/message'
 
 import ChatInput from '@/components/chat-input'
 import Messages from '@/components/messages'
-import { auth } from '@/auth'
+import { getCurrentUser } from '@/lib/auth'
 
 interface ChatProps {
   params: {
@@ -30,10 +30,8 @@ async function getChatMessages(chatId: string) {
 
 export default async function Page({ params }: ChatProps) {
   const { chatId } = params
-  const session = await auth()
-  if (!session) notFound()
-
-  const { user } = session
+  const user = await getCurrentUser()
+  if (!user) notFound()
 
   // Construct url for chat partner
   const [userId1, userId2] = chatId.split('--')
@@ -77,8 +75,8 @@ export default async function Page({ params }: ChatProps) {
       <Messages
         chatId={chatId}
         chatPartner={chatPartner}
-        sessionImg={session.user.image}
-        sessionId={session.user.id}
+        sessionImg={user.image}
+        sessionId={user.id}
         initialMessages={initialMessages}
       />
       <ChatInput chatId={chatId} chatPartner={chatPartner} />

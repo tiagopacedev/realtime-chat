@@ -1,5 +1,5 @@
-import { auth } from '@/auth'
 import { fetchRedis } from '@/helpers/redis'
+import { getCurrentUser } from '@/lib/auth'
 
 import { db } from '@/lib/db'
 import { pusherServer } from '@/lib/pusher'
@@ -21,14 +21,14 @@ export async function POST(req: Request) {
       return new Response('This person does not exist.', { status: 400 })
     }
 
-    const session = await auth()
+    const user = await getCurrentUser()
 
-    if (!session) {
+    if (!user) {
       return new Response('Unauthorized', { status: 401 })
     }
 
     // Prevent the user from adding themselves as a friend
-    if (idToAdd === session.user.id) {
+    if (idToAdd === user.id) {
       return new Response('You cannot add yourself as a friend', {
         status: 400,
       })
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     const isAlreadyAdded = (await fetchRedis(
       'sismember',
       `user:${idToAdd}:incoming_friend_requests`,
-      session.user.id,
+      user.id,
     )) as 0 | 1
 
     if (isAlreadyAdded) {
@@ -46,11 +46,9 @@ export async function POST(req: Request) {
     }
 
     // Check if the two users are already friends
-    const isAlreadyFriends = (await fetchRedis(
-      'sismember',
-      `user:${session.user.id}:friends`,
-      idToAdd,
-    )) as 0 | 1
+    const isAlreadyFriends = (await fetchRedis('sismember', `user:${user.id}:friends`, idToAdd)) as
+      | 0
+      | 1
 
     if (isAlreadyFriends) {
       return new Response('Already friends with this user', { status: 400 })
@@ -61,13 +59,13 @@ export async function POST(req: Request) {
       toPusherKey(`user:${idToAdd}:incoming_friend_requests`),
       'incoming_friend_requests',
       {
-        senderId: session.user.id,
-        senderEmail: session.user.email,
+        senderId: user.id,
+        senderEmail: user.email,
       },
     )
 
     // Store the friend request in Redis for the recipient user
-    await db.sadd(`user:${idToAdd}:incoming_friend_requests`, session.user.id)
+    await db.sadd(`user:${idToAdd}:incoming_friend_requests`, user.id)
 
     return new Response('OK')
   } catch (error) {

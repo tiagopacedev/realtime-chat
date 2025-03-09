@@ -1,5 +1,5 @@
-import { auth } from '@/auth'
 import { fetchRedis } from '@/helpers/redis'
+import { getCurrentUser } from '@/lib/auth'
 
 import { db } from '@/lib/db'
 import { pusherServer } from '@/lib/pusher'
@@ -10,23 +10,23 @@ import { nanoid } from 'nanoid'
 export async function POST(req: Request) {
   try {
     const { text, chatId }: { text: string; chatId: string } = await req.json()
-    const session = await auth()
+    const user = await getCurrentUser()
 
-    if (!session) return new Response('Unauthorized', { status: 401 })
+    if (!user) return new Response('Unauthorized', { status: 401 })
 
     // Split the chatId to retrieve the two userIds and verify the participants of the chat
     const [userId1, userId2] = chatId.split('--')
 
     // Ensure that the current user is one of the chat participants
-    if (session.user.id !== userId1 && session.user.id !== userId2) {
+    if (user.id !== userId1 && user.id !== userId2) {
       return new Response('Unauthorized', { status: 401 })
     }
 
     // Determine the other participant's ID (friendId)
-    const friendId = session.user.id === userId1 ? userId2 : userId1
+    const friendId = user.id === userId1 ? userId2 : userId1
 
     // Get the current user's friend list and verify if the other participant is a friend
-    const friendList = (await fetchRedis('smembers', `user:${session.user.id}:friends`)) as string[]
+    const friendList = (await fetchRedis('smembers', `user:${user.id}:friends`)) as string[]
     const isFriend = friendList.includes(friendId)
 
     if (!isFriend) {
@@ -34,14 +34,14 @@ export async function POST(req: Request) {
     }
 
     // Fetch the sender's details
-    const rawSender = (await fetchRedis('get', `user:${session.user.id}`)) as string
+    const rawSender = (await fetchRedis('get', `user:${user.id}`)) as string
     const sender = JSON.parse(rawSender) as User
 
     const timestamp = Date.now()
 
     const messageData: Message = {
       id: nanoid(),
-      senderId: session.user.id,
+      senderId: user.id,
       text,
       timestamp,
     }

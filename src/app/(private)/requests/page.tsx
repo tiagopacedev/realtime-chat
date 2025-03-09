@@ -1,15 +1,15 @@
-import { auth } from '@/auth'
 import FriendRequests from '@/components/friend-requests'
 import { fetchRedis } from '@/helpers/redis'
+import { getCurrentUser } from '@/lib/auth'
 import { notFound } from 'next/navigation'
 
 export default async function Page() {
-  const session = await auth()
-  if (!session) notFound()
+  const user = await getCurrentUser()
+  if (!user) notFound()
 
   const incomingSenderIds = (await fetchRedis(
     'smembers',
-    `user:${session.user.id}:incoming_friend_requests`,
+    `user:${user.id}:incoming_friend_requests`,
   )) as string[]
 
   const incomingFriendRequests = await Promise.all(
@@ -28,10 +28,7 @@ export default async function Page() {
     <main className="p-8">
       <h1 className="mb-8 text-3xl font-bold">Requests</h1>
       <div className="flex flex-col gap-4">
-        <FriendRequests
-          incomingFriendRequests={incomingFriendRequests}
-          sessionId={session.user.id}
-        />
+        <FriendRequests incomingFriendRequests={incomingFriendRequests} sessionId={user.id} />
       </div>
     </main>
   )

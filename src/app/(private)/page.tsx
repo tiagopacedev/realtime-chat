@@ -8,19 +8,20 @@ import { getFriendsByUserId } from '@/helpers/get-friends-by-user-id'
 import { chatHrefConstructor } from '@/lib/utils'
 
 import { notFound } from 'next/navigation'
-import { auth } from '@/auth'
+
+import { getCurrentUser } from '@/lib/auth'
 
 export default async function Page({}) {
-  const session = await auth()
-  if (!session) notFound()
+  const user = await getCurrentUser()
+  if (!user) notFound()
 
-  const friends = await getFriendsByUserId(session.user.id)
+  const friends = await getFriendsByUserId(user.id)
 
   const friendsWithLastMessage = await Promise.all(
     friends.map(async (friend) => {
       const [lastMessageRaw] = (await fetchRedis(
         'zrange',
-        `chat:${chatHrefConstructor(session.user.id, friend.id)}:messages`,
+        `chat:${chatHrefConstructor(user.id, friend.id)}:messages`,
         -1,
         -1,
       )) as string[]
@@ -46,7 +47,7 @@ export default async function Page({}) {
             className="relative mb-4 rounded-md border border-zinc-200 p-3 hover:bg-zinc-50"
           >
             <Link
-              href={`/chat/${chatHrefConstructor(session.user.id, friend.id)}`}
+              href={`/chat/${chatHrefConstructor(user.id, friend.id)}`}
               className="flex items-center gap-4"
             >
               <div className="flex-shrink-0">
@@ -64,7 +65,7 @@ export default async function Page({}) {
               <div>
                 <h4 className="text-lg">{friend.name}</h4>
                 <p className="max-w-md text-zinc-400">
-                  <span>{friend.lastMessage.senderId === session.user.id ? 'You: ' : ''}</span>
+                  <span>{friend.lastMessage.senderId === user.id ? 'You: ' : ''}</span>
                   {friend.lastMessage.text}
                 </p>
               </div>

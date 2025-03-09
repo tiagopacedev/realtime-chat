@@ -2,14 +2,14 @@ import { z } from 'zod'
 import { db } from '@/lib/db'
 import { pusherServer } from '@/lib/pusher'
 import { toPusherKey } from '@/lib/utils'
-import { auth } from '@/auth'
+import { getCurrentUser } from '@/lib/auth'
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const session = await auth()
+    const user = await getCurrentUser()
 
-    if (!session) {
+    if (!user) {
       return new Response('Unauthorized', { status: 401 })
     }
 
@@ -17,11 +17,11 @@ export async function POST(req: Request) {
     const { id: idToDeny } = z.object({ id: z.string() }).parse(body)
 
     // Remove the incoming friend request from the database
-    await db.srem(`user:${session.user.id}:incoming_friend_requests`, idToDeny)
+    await db.srem(`user:${user.id}:incoming_friend_requests`, idToDeny)
 
     // Trigger a Pusher event to update the sidebar in real time
     await pusherServer.trigger(
-      toPusherKey(`user:${session.user.id}:incoming_friend_requests`),
+      toPusherKey(`user:${user.id}:incoming_friend_requests`),
       'deny_request',
       {
         id: idToDeny,
