@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { fetchRedis } from '@/lib/redis'
-import { getFriendsByUserId } from '@/helpers/get-friends-by-user-id'
+import { getFriendsByUserId } from '../actions/get-friends-by-user-id'
 
 import { chatHrefConstructor } from '@/lib/utils'
 

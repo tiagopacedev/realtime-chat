@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { MessageCircleMore } from 'lucide-react'
 
 import { fetchRedis } from '@/lib/redis'
-import { getFriendsByUserId } from '@/helpers/get-friends-by-user-id'
+import { getFriendsByUserId } from '../actions/get-friends-by-user-id'
 
 import { Icons, type Icon } from '@/components/icons'
 import SignOutButton from '@/components/sign-out-button'

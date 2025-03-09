@@ -1,4 +1,4 @@
-import { fetchRedis } from '../lib/redis'
+import { fetchRedis } from '@/lib/redis'
 
 export const getFriendsByUserId = async (userId: string) => {
   const friendIds = (await fetchRedis('smembers', `user:${userId}:friends`)) as string[]
