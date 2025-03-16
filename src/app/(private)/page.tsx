@@ -1,39 +1,16 @@
 import dayjs from 'dayjs'
 import Image from 'next/image'
 import Link from 'next/link'
-
-import { fetchRedis } from '@/lib/redis'
-import { getFriendsByUserId } from '../actions/get-friends-by-user-id'
-
 import { chatHrefConstructor } from '@/lib/utils'
-
 import { notFound } from 'next/navigation'
-
 import { getCurrentUser } from '@/lib/auth'
+import { fetchChatList } from '../actions/fetch-chat-list'
 
 export default async function Page({}) {
   const user = await getCurrentUser()
   if (!user) notFound()
 
-  const friends = await getFriendsByUserId(user.id)
-
-  const friendsWithLastMessage = await Promise.all(
-    friends.map(async (friend) => {
-      const [lastMessageRaw] = (await fetchRedis(
-        'zrange',
-        `chat:${chatHrefConstructor(user.id, friend.id)}:messages`,
-        -1,
-        -1,
-      )) as string[]
-
-      const lastMessage = JSON.parse(lastMessageRaw) as Message
-
-      return {
-        ...friend,
-        lastMessage,
-      }
-    }),
-  )
+  const friendsWithLastMessage = await fetchChatList(user.id)
 
   return (
     <div className="p-8">
@@ -64,15 +41,19 @@ export default async function Page({}) {
 
               <div>
                 <h4 className="text-lg">{friend.name}</h4>
-                <p className="max-w-md text-zinc-400">
-                  <span>{friend.lastMessage.senderId === user.id ? 'You: ' : ''}</span>
-                  {friend.lastMessage.text}
-                </p>
+                {friend.lastMessage && (
+                  <p className="max-w-md text-zinc-400">
+                    <span>{friend.lastMessage.senderId === user.id ? 'You: ' : ''}</span>
+                    {friend.lastMessage.text}
+                  </p>
+                )}
               </div>
 
-              <p className="absolute right-0 top-0 p-3 text-sm text-zinc-400">
-                {dayjs(friend.lastMessage.timestamp).format('dddd')}
-              </p>
+              {friend.lastMessage && (
+                <p className="absolute right-0 top-0 p-3 text-sm text-zinc-400">
+                  {dayjs(friend.lastMessage.timestamp).format('dddd')}
+                </p>
+              )}
             </Link>
           </div>
         ))
