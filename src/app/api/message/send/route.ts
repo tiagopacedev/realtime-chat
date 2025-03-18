@@ -4,7 +4,8 @@ import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { pusherServer } from '@/lib/pusher'
 import { toPusherKey } from '@/lib/utils'
-import { Message, messageValidator } from '@/lib/validations/message'
+import { Message, messageSchema } from '@/lib/schemas/message-schema'
+
 import { nanoid } from 'nanoid'
 
 export async function POST(req: Request) {
@@ -46,7 +47,7 @@ export async function POST(req: Request) {
       timestamp,
     }
 
-    const message = messageValidator.parse(messageData)
+    const message = messageSchema.parse(messageData)
 
     // Notify all users in the chat about the new incoming message
     await pusherServer.trigger(toPusherKey(`chat:${chatId}`), 'incoming-message', message)

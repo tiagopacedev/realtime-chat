@@ -1,30 +1,28 @@
 'use client'
 
-import { Loader2, LogOut } from 'lucide-react'
+import { useState } from 'react'
 import { signOut } from 'next-auth/react'
 import toast from 'react-hot-toast'
-import { useState } from 'react'
+import { Loader2, LogOut } from 'lucide-react'
 
-import { Button } from './ui/button'
+import { Button, ButtonProps } from './ui/button'
 
-export default function SignOutButton({ ...props }) {
-  const [isSigningOut, setIsSigningOut] = useState<boolean>(false)
+export default function SignOutButton(props: ButtonProps) {
+  const [isSigningOut, setIsSigningOut] = useState(false)
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true)
+    try {
+      await signOut()
+    } catch {
+      toast.error('Failed to sign out. Please try again.')
+    } finally {
+      setIsSigningOut(false)
+    }
+  }
+
   return (
-    <Button
-      {...props}
-      variant="ghost"
-      className="mr-6 h-full w-12"
-      onClick={async () => {
-        setIsSigningOut(true)
-        try {
-          await signOut()
-        } catch (error) {
-          toast.error('There was a problem signing out')
-        } finally {
-          setIsSigningOut(false)
-        }
-      }}
-    >
+    <Button {...props} variant="ghost" onClick={handleSignOut} disabled={isSigningOut}>
       {isSigningOut ? <Loader2 className="animate-spin" /> : <LogOut />}
     </Button>
   )

@@ -4,7 +4,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { pusherServer } from '@/lib/pusher'
 import { toPusherKey } from '@/lib/utils'
-import { addFriendValidator } from '@/lib/validations/add-friend'
+import { addFriendSchema } from '@/lib/schemas/add-friend-schema'
 
 import { z } from 'zod'
 
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
 
-    const { email: emailToAdd } = addFriendValidator.parse(body)
+    const { email: emailToAdd } = addFriendSchema.parse(body)
 
     const idToAdd = (await fetchRedis('get', `user:email:${emailToAdd}`)) as string
 

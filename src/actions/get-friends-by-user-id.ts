@@ -1,6 +1,8 @@
+'use server'
+
 import { fetchRedis } from '@/lib/redis'
 
-export const getFriendsByUserId = async (userId: string) => {
+export async function getFriendsByUserId(userId: string) {
   const friendIds = (await fetchRedis('smembers', `user:${userId}:friends`)) as string[]
 
   const friends = await Promise.all(

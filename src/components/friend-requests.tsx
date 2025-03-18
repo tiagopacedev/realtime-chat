@@ -6,6 +6,7 @@ import axios from 'axios'
 import { Check, UserPlus, X } from 'lucide-react'
 import { pusherClient } from '@/lib/pusher'
 import { toPusherKey } from '@/lib/utils'
+import { Button } from './ui/button'
 
 interface FriendRequestsProps {
   incomingFriendRequests: IncomingFriendRequest[]
@@ -18,63 +19,63 @@ export default function FriendRequests({ incomingFriendRequests, sessionId }: Fr
     useState<IncomingFriendRequest[]>(incomingFriendRequests)
 
   useEffect(() => {
-    pusherClient.subscribe(toPusherKey(`user:${sessionId}:incoming_friend_requests`))
+    const channel = toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+    pusherClient.subscribe(channel)
 
-    const friendRequestHandler = ({ senderId, senderEmail }: IncomingFriendRequest) => {
-      setFriendRequests((prev) => [...prev, { senderId, senderEmail }])
+    const handleIncomingRequest = (request: IncomingFriendRequest) => {
+      setFriendRequests((prev) => [...prev, request])
     }
 
-    pusherClient.bind('incoming_friend_requests', friendRequestHandler)
+    pusherClient.bind('incoming_friend_requests', handleIncomingRequest)
 
     return () => {
-      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:incoming_friend_requests`))
-      pusherClient.unbind('incoming_friend_requests', friendRequestHandler)
+      pusherClient.unsubscribe(channel)
+      pusherClient.unbind('incoming_friend_requests', handleIncomingRequest)
     }
   }, [sessionId])
 
-  const acceptFriend = async (senderId: string) => {
-    await axios.post('/api/friends/accept', { id: senderId })
-
-    setFriendRequests((prev) => prev.filter((request) => request.senderId !== senderId))
-
-    router.refresh()
-  }
-
-  const denyFriend = async (senderId: string) => {
-    await axios.post('/api/friends/deny', { id: senderId })
-
-    setFriendRequests((prev) => prev.filter((request) => request.senderId !== senderId))
-
+  const handleFriendRequest = async (senderId: string, action: 'accept' | 'deny') => {
+    await axios.post(`/api/friends/${action}`, { id: senderId })
+    setFriendRequests((prev) => prev.filter((req) => req.senderId !== senderId))
     router.refresh()
   }
 
   return (
     <>
       {friendRequests.length === 0 ? (
-        <p className="text-sm text-zinc-500">Nothing to show here...</p>
+        <p className="text-sm text-zinc-500">Your friend requests will appear here.</p>
       ) : (
         friendRequests.map((request) => (
-          <div key={request.senderId} className="flex items-center gap-4">
-            <UserPlus className="text-black" />
-            <p className="text-lg font-medium">{request.senderEmail}</p>
-            <button
-              onClick={() => acceptFriend(request.senderId)}
-              aria-label="accept friend"
-              className="grid h-8 w-8 place-items-center rounded-full bg-indigo-600 transition hover:bg-indigo-700 hover:shadow-md"
-            >
-              <Check className="h-3/4 w-3/4 font-semibold text-white" />
-            </button>
-
-            <button
-              onClick={() => denyFriend(request.senderId)}
-              aria-label="deny friend"
-              className="grid h-8 w-8 place-items-center rounded-full bg-red-600 transition hover:bg-red-700 hover:shadow-md"
-            >
-              <X className="h-3/4 w-3/4 font-semibold text-white" />
-            </button>
-          </div>
+          <FriendRequestItem
+            key={request.senderId}
+            request={request}
+            onAccept={() => handleFriendRequest(request.senderId, 'accept')}
+            onDeny={() => handleFriendRequest(request.senderId, 'deny')}
+          />
         ))
       )}
     </>
+  )
+}
+
+// Extracted FriendRequestItem component
+interface FriendRequestItemProps {
+  request: IncomingFriendRequest
+  onAccept: () => void
+  onDeny: () => void
+}
+
+function FriendRequestItem({ request, onAccept, onDeny }: FriendRequestItemProps) {
+  return (
+    <div className="flex items-center gap-3">
+      <UserPlus />
+      <p className="text-lg font-medium">{request.senderEmail}</p>
+      <Button onClick={onAccept} size="icon" variant="success" className="size-8">
+        <Check className="font-semibold text-white" />
+      </Button>
+      <Button onClick={onDeny} size="icon" variant="destructive" className="size-8">
+        <X className="font-semibold text-white" />
+      </Button>
+    </div>
   )
 }

@@ -2,19 +2,20 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { User } from 'lucide-react'
+import { Bell } from 'lucide-react'
 import { pusherClient } from '@/lib/pusher'
 import { toPusherKey } from '@/lib/utils'
+import { Button } from './ui/button'
 
-interface FriendRequestSidebarOptionsProps {
+interface FriendRequestsButtonProps {
   sessionId: string
   initialUnseenRequestCount: number
 }
 
-export default function FriendRequestSidebarOptions({
+export default function FriendRequestsButton({
   sessionId,
   initialUnseenRequestCount,
-}: FriendRequestSidebarOptionsProps) {
+}: FriendRequestsButtonProps) {
   const [unseenRequestCount, setUnseenRequestCount] = useState<number>(initialUnseenRequestCount)
 
   useEffect(() => {
@@ -48,20 +49,15 @@ export default function FriendRequestSidebarOptions({
   }, [sessionId])
 
   return (
-    <Link
-      href="/requests"
-      className="group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
-    >
-      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-[0.625rem] font-medium text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600">
-        <User className="h-4 w-4" />
-      </div>
-
-      <p className="truncate">Friend requests</p>
-      {unseenRequestCount > 0 && (
-        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">
-          {unseenRequestCount}
-        </div>
-      )}
+    <Link href="/requests">
+      <Button variant="ghost" size="icon" className="relative flex items-center">
+        {unseenRequestCount > 0 && (
+          <div className="absolute right-0 top-0 h-4 w-4 rounded-full bg-green-500 text-center text-xs text-white">
+            {unseenRequestCount}
+          </div>
+        )}
+        <Bell />
+      </Button>
     </Link>
   )
 }

@@ -45,16 +45,16 @@ export default function UnseenChatToast({
           </div>
 
           <div className="ml-3 flex-1">
-            <p className="text-sm font-medium text-gray-900">{senderName}</p>
-            <p className="mt-1 text-sm text-gray-500">{senderMessage}</p>
+            <p className="text-sm font-medium text-zinc-900">{senderName}</p>
+            <p className="mt-1 text-sm text-zinc-500">{senderMessage}</p>
           </div>
         </div>
       </a>
 
-      <div className="flex border-l border-gray-200">
+      <div className="flex border-l border-zinc-200">
         <button
           onClick={() => toast.dismiss(t.id)}
-          className="flex w-full items-center justify-center rounded-none rounded-r-lg border border-transparent p-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="flex w-full items-center justify-center rounded-none rounded-r-lg border border-transparent p-4 text-sm font-medium text-green-600 hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
         >
           Close
         </button>
