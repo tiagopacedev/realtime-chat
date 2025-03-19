@@ -11,14 +11,13 @@ import { z } from 'zod'
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-
     const { email: emailToAdd } = addFriendSchema.parse(body)
 
     const idToAdd = (await fetchRedis('get', `user:email:${emailToAdd}`)) as string
 
-    // If no user exists with the provided email, return an error
+    // Check if the user exists
     if (!idToAdd) {
-      return new Response('This person does not exist.', { status: 400 })
+      return new Response('User not found.', { status: 400 })
     }
 
     const user = await getCurrentUser()
@@ -27,14 +26,12 @@ export async function POST(req: Request) {
       return new Response('Unauthorized', { status: 401 })
     }
 
-    // Prevent the user from adding themselves as a friend
+    // Prevent adding self as a friend
     if (idToAdd === user.id) {
-      return new Response('You cannot add yourself as a friend', {
-        status: 400,
-      })
+      return new Response('You cannot add yourself as a friend.', { status: 400 })
     }
 
-    // Check if the user has already sent a friend request to the person
+    // Check if the user has already sent a request
     const isAlreadyAdded = (await fetchRedis(
       'sismember',
       `user:${idToAdd}:incoming_friend_requests`,
@@ -42,19 +39,19 @@ export async function POST(req: Request) {
     )) as 0 | 1
 
     if (isAlreadyAdded) {
-      return new Response('Already added this user', { status: 400 })
+      return new Response('Friend request already sent.', { status: 400 })
     }
 
-    // Check if the two users are already friends
+    // Check if they are already friends
     const isAlreadyFriends = (await fetchRedis('sismember', `user:${user.id}:friends`, idToAdd)) as
       | 0
       | 1
 
     if (isAlreadyFriends) {
-      return new Response('Already friends with this user', { status: 400 })
+      return new Response('You are already friends.', { status: 400 })
     }
 
-    // Send a notification about the incoming friend request
+    // Send friend request notification
     await pusherServer.trigger(
       toPusherKey(`user:${idToAdd}:incoming_friend_requests`),
       'incoming_friend_requests',
@@ -64,15 +61,15 @@ export async function POST(req: Request) {
       },
     )
 
-    // Store the friend request in Redis for the recipient user
+    // Save the friend request in the database
     await db.sadd(`user:${idToAdd}:incoming_friend_requests`, user.id)
 
-    return new Response('OK')
+    return new Response('Friend request sent!', { status: 200 })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return new Response('Invalid request payload', { status: 422 })
+      return new Response('Invalid request data.', { status: 422 })
     }
 
-    return new Response('Invalid request', { status: 400 })
+    return new Response('Something went wrong. Please try again.', { status: 400 })
   }
 }

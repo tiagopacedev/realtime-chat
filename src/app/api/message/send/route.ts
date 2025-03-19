@@ -15,26 +15,26 @@ export async function POST(req: Request) {
 
     if (!user) return new Response('Unauthorized', { status: 401 })
 
-    // Split the chatId to retrieve the two userIds and verify the participants of the chat
+    // Split the chatId to retrieve the two userIds and verify participants
     const [userId1, userId2] = chatId.split('--')
 
-    // Ensure that the current user is one of the chat participants
+    // Ensure the current user is part of the chat
     if (user.id !== userId1 && user.id !== userId2) {
-      return new Response('Unauthorized', { status: 401 })
+      return new Response('You are not part of this chat.', { status: 401 })
     }
 
     // Determine the other participant's ID (friendId)
     const friendId = user.id === userId1 ? userId2 : userId1
 
-    // Get the current user's friend list and verify if the other participant is a friend
+    // Verify if the other participant is a friend
     const friendList = (await fetchRedis('smembers', `user:${user.id}:friends`)) as string[]
     const isFriend = friendList.includes(friendId)
 
     if (!isFriend) {
-      return new Response('Unauthorized', { status: 401 })
+      return new Response('You are not friends with this user.', { status: 401 })
     }
 
-    // Fetch the sender's details
+    // Fetch sender details
     const rawSender = (await fetchRedis('get', `user:${user.id}`)) as string
     const sender = JSON.parse(rawSender) as User
 
@@ -49,10 +49,10 @@ export async function POST(req: Request) {
 
     const message = messageSchema.parse(messageData)
 
-    // Notify all users in the chat about the new incoming message
+    // Notify all users in the chat about the new message
     await pusherServer.trigger(toPusherKey(`chat:${chatId}`), 'incoming-message', message)
 
-    // Notify the friend about the new message
+    // Notify the other participant about the new message
     await pusherServer.trigger(toPusherKey(`user:${friendId}:chats`), 'new_message', {
       ...message,
       senderImg: sender.image,
@@ -65,12 +65,9 @@ export async function POST(req: Request) {
       member: JSON.stringify(message),
     })
 
-    return new Response('OK')
+    return new Response('Message sent successfully!', { status: 200 })
   } catch (error) {
-    if (error instanceof Error) {
-      return new Response(error.message, { status: 500 })
-    }
-
-    return new Response('Internal Server Error', { status: 500 })
+    console.error(error)
+    return new Response('Internal server error, please try again.', { status: 500 })
   }
 }

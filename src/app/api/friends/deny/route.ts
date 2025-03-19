@@ -28,14 +28,14 @@ export async function POST(req: Request) {
       },
     )
 
-    return new Response('OK')
+    return new Response('Friend request denied.', { status: 200 })
   } catch (error) {
     console.log(error)
 
     if (error instanceof z.ZodError) {
-      return new Response('Invalid request payload', { status: 422 })
+      return new Response('Invalid request data.', { status: 422 })
     }
 
-    return new Response('Invalid request', { status: 400 })
+    return new Response('Something went wrong. Please try again.', { status: 400 })
   }
 }

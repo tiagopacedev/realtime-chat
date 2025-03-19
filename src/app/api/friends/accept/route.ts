@@ -17,14 +17,14 @@ export async function POST(req: Request) {
       return new Response('Unauthorized', { status: 401 })
     }
 
-    // Verify both users are not already friends
+    // Check if already friends
     const isAlreadyFriends = await fetchRedis('sismember', `user:${user.id}:friends`, idToAdd)
 
     if (isAlreadyFriends) {
-      return new Response('Already friends', { status: 400 })
+      return new Response('You are already friends.', { status: 400 })
     }
 
-    // Check if there is an incoming friend request
+    // Check for incoming friend request
     const hasFriendRequest = await fetchRedis(
       'sismember',
       `user:${user.id}:incoming_friend_requests`,
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     )
 
     if (!hasFriendRequest) {
-      return new Response('No friend request', { status: 400 })
+      return new Response('No friend request from this user.', { status: 400 })
     }
 
     const [userRaw, friendRaw] = (await Promise.all([
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     const currentUser = JSON.parse(userRaw) as User
     const friend = JSON.parse(friendRaw) as User
 
-    // Notify the added user and update the friend lists of both users in the database
+    // Add both users as friends and notify them
     await Promise.all([
       pusherServer.trigger(toPusherKey(`user:${idToAdd}:friends`), 'new_friend', currentUser),
       pusherServer.trigger(toPusherKey(`user:${user.id}:friends`), 'new_friend', friend),
@@ -53,14 +53,14 @@ export async function POST(req: Request) {
       db.srem(`user:${user.id}:incoming_friend_requests`, idToAdd),
     ])
 
-    return new Response('OK')
+    return new Response('Friend request accepted!', { status: 200 })
   } catch (error) {
     console.log(error)
 
     if (error instanceof z.ZodError) {
-      return new Response('Invalid request payload', { status: 422 })
+      return new Response('Invalid data.', { status: 422 })
     }
 
-    return new Response('Invalid request', { status: 400 })
+    return new Response('Something went wrong. Please try again.', { status: 400 })
   }
 }
