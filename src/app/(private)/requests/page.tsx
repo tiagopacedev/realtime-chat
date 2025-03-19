@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import FriendRequests from '@/components/friend-requests'
 import { fetchFriendRequests } from '@/actions/fetch-friend-requests'
 import { getCurrentUser } from '@/lib/auth'
+import BackButton from '@/components/back-button'
 
 export default async function Page() {
   const user = await getCurrentUser()
@@ -10,8 +11,12 @@ export default async function Page() {
   const incomingFriendRequests = await fetchFriendRequests(user.id)
 
   return (
-    <main className="h-full rounded-md border bg-white p-8 md:ml-4">
-      <h1 className="mb-8 text-xl font-bold">Requests</h1>
+    <main className="h-full rounded-md border bg-white p-6 md:p-8">
+      <div className="mb-8 flex items-center gap-2">
+        <BackButton />
+        <h1 className="text-xl font-bold">Requests</h1>
+      </div>
+
       <div className="flex flex-col gap-4">
         <FriendRequests incomingFriendRequests={incomingFriendRequests} sessionId={user.id} />
       </div>

@@ -11,7 +11,7 @@ type BackButtonProps = {
 export default function BackButton({ href = '/' }: BackButtonProps) {
   return (
     <Link href={href} className="md:hidden">
-      <Button size="icon" variant="outline">
+      <Button size="icon" variant="ghost">
         <ArrowLeft />
       </Button>
     </Link>

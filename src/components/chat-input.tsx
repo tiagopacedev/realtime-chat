@@ -68,9 +68,10 @@ export default function ChatInput({ chatId }: ChatInputProps) {
     //   </div>
     // </div>
 
-    <div className="px-6 py-6 sm:mb-0">
+    <div className="border-t p-4">
       <div className="flex items-center gap-2">
         <Input
+          className="rounded-3xl"
           value={input}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
@@ -80,9 +81,9 @@ export default function ChatInput({ chatId }: ChatInputProps) {
           disabled={isLoading}
           onClick={() => sendMessage(input || DEFAULT_MESSAGE)}
           size="icon"
-          variant="outline"
+          variant="ghost"
           type="submit"
-          className="flex-shrink-0"
+          className="flex-shrink-0 rounded-full"
         >
           {input ? <Send /> : <ThumbsUp />}
         </Button>

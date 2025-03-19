@@ -21,7 +21,7 @@ export default async function Sidebar() {
   const unseenRequests = await fetchIncomingRequests(user.id)
 
   return (
-    <nav className="relative hidden h-full w-full max-w-[22rem] grow flex-col gap-y-5 overflow-y-auto rounded-md border border-gray-200 bg-white p-6 md:flex">
+    <nav className="relative hidden h-full w-full max-w-[22rem] grow flex-col gap-y-5 overflow-y-auto rounded-md border bg-white p-6 md:flex">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Chats</h1>
 

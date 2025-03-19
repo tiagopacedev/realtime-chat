@@ -11,8 +11,8 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ chatPartner }: ChatHeaderProps) {
   return (
-    <div className="flex justify-between p-4 sm:items-center md:py-6">
-      <div className="relative flex items-center space-x-4">
+    <div className="flex justify-between border-b p-4 sm:items-center md:py-4">
+      <div className="relative flex items-center gap-2">
         <BackButton />
 
         <div className="relative size-10">
@@ -28,7 +28,7 @@ export function ChatHeader({ chatPartner }: ChatHeaderProps) {
         <div className="flex flex-col leading-tight">
           <div className="flex items-center">
             <span className="mr-3 font-medium">{chatPartner.name}</span>
-            {/* Add online status or other indicators here */}
+            {/* Online status */}
             <span className="h-2 w-2 rounded-full bg-green-500" />
           </div>
           <span className="text-sm text-zinc-400">{chatPartner.email}</span>

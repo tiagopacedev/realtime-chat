@@ -33,7 +33,7 @@ export default async function Page({ params }: ChatProps) {
   const initialMessages = await fetchChatMessages(chatId)
 
   return (
-    <div className="flex h-full flex-1 flex-col justify-between rounded-md border bg-white md:ml-4">
+    <div className="flex h-full flex-1 flex-col justify-between rounded-md border bg-white">
       <ChatHeader chatPartner={chatPartner} />
       <ChatMessages chatId={chatId} sessionId={user.id} initialMessages={initialMessages} />
       <ChatInput chatId={chatId} />

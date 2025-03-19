@@ -6,8 +6,8 @@ interface UserProfileProps {
 
 export default function UserProfile({ user }: UserProfileProps) {
   return (
-    <div className="flex flex-1 items-center gap-x-4 px-6 py-2 text-sm font-semibold leading-6 text-zinc-900">
-      <div className="relative size-8">
+    <div className="flex flex-1 items-center gap-x-3 px-6 py-2 text-sm font-semibold leading-6 text-zinc-900">
+      <div className="relative size-10">
         <Image
           fill
           referrerPolicy="no-referrer"
