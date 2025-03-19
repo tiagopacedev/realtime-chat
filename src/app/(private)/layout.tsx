@@ -12,7 +12,7 @@ export const metadata = {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="flex h-screen w-full bg-zinc-50 md:justify-center md:gap-4 md:p-12 lg:p-28">
+    <div className="flex h-screen w-full bg-zinc-100 md:justify-center md:gap-4 md:p-12 lg:p-28">
       <Sidebar />
 
       <aside className="sm max-h-screen w-full lg:w-1/2">{children}</aside>

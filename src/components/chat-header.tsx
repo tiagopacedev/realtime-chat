@@ -11,11 +11,11 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ chatPartner }: ChatHeaderProps) {
   return (
-    <div className="flex justify-between border-b p-4 sm:items-center md:py-4">
+    <div className="flex items-center justify-between border-b p-4 md:py-4">
       <div className="relative flex items-center gap-2">
         <BackButton />
 
-        <div className="relative size-10">
+        <div className="relative size-12">
           <Image
             fill
             referrerPolicy="no-referrer"

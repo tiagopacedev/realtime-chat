@@ -34,9 +34,9 @@ export default function ChatListItem({
         )}
       >
         {/* Avatar */}
-        <div className="relative size-10 flex-shrink-0">
+        <div className="relative size-12 flex-shrink-0">
           <Image
-            src={friend.image || '/placeholder.svg'}
+            src={friend.image}
             alt={friend.name}
             fill
             referrerPolicy="no-referrer"

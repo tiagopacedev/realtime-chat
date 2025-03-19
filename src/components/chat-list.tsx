@@ -71,7 +71,7 @@ export default function ChatList({ friends, sessionId }: ChatListProps) {
   }, [pathname])
 
   return (
-    <ul role="list" className="-mx-2 max-h-[25rem] space-y-1 overflow-y-auto">
+    <ul role="list" className="-mx-2 max-h-[28rem] space-y-1 overflow-y-auto">
       {activeChats.sort().map((friend) => (
         <ChatListItem
           key={friend.id}

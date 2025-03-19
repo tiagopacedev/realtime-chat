@@ -39,7 +39,7 @@ export default async function Sidebar() {
       </div>
 
       <div className="flex flex-1 flex-col">
-        <div className="flex flex-1 flex-col gap-y-7">
+        <div className="flex flex-1 flex-col">
           <ChatList friends={friends} sessionId={user.id} />
 
           <div className="-mx-6 mt-auto flex items-center">

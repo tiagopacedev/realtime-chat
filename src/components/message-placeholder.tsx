@@ -8,7 +8,7 @@ interface MessagePlaceholderProps {
 
 export default function MessagePlaceholder({ hasFriends }: MessagePlaceholderProps) {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-4 rounded-md border bg-white p-10">
+    <div className="flex h-full flex-col items-center justify-center gap-4 p-10">
       {hasFriends ? (
         <>
           <MessagesSquare className="size-10 text-zinc-400" />
