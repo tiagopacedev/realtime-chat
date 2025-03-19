@@ -4,13 +4,13 @@ import { fetchIncomingRequests } from '@/actions/fetch-incoming-requests'
 import { getFriendsByUserId } from '@/actions/get-friends-by-user-id'
 import { getCurrentUser } from '@/lib/auth'
 import { notFound } from 'next/navigation'
-import FriendRequestsButton from './friend-request-button'
-import { Button } from './ui/button'
+import FriendRequestsButton from '../friend-request-button'
+import { Button } from '../ui/button'
 import { SquarePen } from 'lucide-react'
-import ChatList from './chat/chat-list'
-import SignOutButton from './sign-out-button'
+import ChatList from '../chat/chat-list'
+import SignOutButton from '../sign-out-button'
 import Link from 'next/link'
-import UserProfile from './user-profile'
+import UserProfile from '../user-profile'
 
 export default async function Sidebar() {
   const user = await getCurrentUser()

@@ -1,13 +1,13 @@
 'use server'
 
 import { fetchIncomingRequests } from '@/actions/fetch-incoming-requests'
-import FriendRequestsButton from './friend-request-button'
-import { Button } from './ui/button'
+import FriendRequestsButton from '../friend-request-button'
+import { Button } from '../ui/button'
 import { SquarePen } from 'lucide-react'
-import ChatList from './chat/chat-list'
-import SignOutButton from './sign-out-button'
+import ChatList from '../chat/chat-list'
+import SignOutButton from '../sign-out-button'
 import Link from 'next/link'
-import UserProfile from './user-profile'
+import UserProfile from '../user-profile'
 
 interface MobileNavigationProps {
   user: User
