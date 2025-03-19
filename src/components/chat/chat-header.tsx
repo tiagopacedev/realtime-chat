@@ -2,8 +2,7 @@
 
 import React from 'react'
 import Image from 'next/image'
-
-import BackButton from './back-button'
+import BackButton from '../back-button'
 
 interface ChatHeaderProps {
   chatPartner: User

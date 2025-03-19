@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
-import { Button } from './ui/button'
-import { Input } from './ui/input'
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
 import { Send, ThumbsUp } from 'lucide-react'
 
 const MESSAGE_PLACEHOLDER = 'Type a message...'

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { chatHrefConstructor, toPusherKey } from '@/lib/utils'
 import { pusherClient } from '@/lib/pusher'
-import UnseenChatToast from './unseen-chat-toast'
+import UnseenChatToast from '../unseen-chat-toast'
 import toast, { type Toast } from 'react-hot-toast'
 import ChatListItem from './chat-list-item'
 

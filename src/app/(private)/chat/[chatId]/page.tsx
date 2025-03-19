@@ -2,11 +2,11 @@ import React from 'react'
 import { notFound } from 'next/navigation'
 
 import { fetchRedis } from '@/lib/redis'
-import ChatInput from '@/components/chat-input'
-import ChatMessages from '@/components/chat-messages'
+import ChatInput from '@/components/chat/chat-input'
+import ChatMessages from '@/components/chat/chat-messages'
 import { getCurrentUser } from '@/lib/auth'
 import { fetchChatMessages } from '@/actions/fetch-chat-messages'
-import ChatHeader from '@/components/chat-header'
+import ChatHeader from '@/components/chat/chat-header'
 
 interface ChatProps {
   params: {
