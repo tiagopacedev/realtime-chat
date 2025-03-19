@@ -8,14 +8,12 @@ import { getCurrentUser } from '@/lib/auth'
 import { fetchChatMessages } from '@/actions/fetch-chat-messages'
 import ChatHeader from '@/components/chat/chat-header'
 
-interface ChatProps {
-  params: {
-    chatId: string
-  }
+interface ChatPageProps {
+  params: Promise<{ chatId: string }>
 }
 
-export default async function Page({ params }: ChatProps) {
-  const { chatId } = params
+export default async function Page({ params }: ChatPageProps) {
+  const { chatId } = await params
   const user = await getCurrentUser()
   if (!user) notFound()
 
