@@ -54,7 +54,7 @@ export default function UnseenChatToast({
       <div className="flex border-l border-zinc-200">
         <button
           onClick={() => toast.dismiss(t.id)}
-          className="flex w-full items-center justify-center rounded-none rounded-r-lg border border-transparent p-4 text-sm font-medium text-green-600 hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="flex w-full items-center justify-center rounded-none rounded-r-lg border border-transparent p-4 text-sm font-medium text-emerald-600 hover:text-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         >
           Close
         </button>

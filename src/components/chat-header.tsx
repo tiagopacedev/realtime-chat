@@ -29,7 +29,7 @@ export function ChatHeader({ chatPartner }: ChatHeaderProps) {
           <div className="flex items-center">
             <span className="mr-3 font-medium">{chatPartner.name}</span>
             {/* Online status */}
-            <span className="h-2 w-2 rounded-full bg-green-500" />
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
           </div>
           <span className="text-sm text-zinc-400">{chatPartner.email}</span>
         </div>

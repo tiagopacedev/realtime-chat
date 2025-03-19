@@ -52,7 +52,7 @@ export default function FriendRequestsButton({
     <Link href="/requests">
       <Button variant="ghost" size="icon" className="relative flex items-center">
         {unseenRequestCount > 0 && (
-          <div className="absolute right-0 top-0 h-4 w-4 rounded-full bg-green-500 text-center text-xs text-white">
+          <div className="absolute right-0 top-0 h-4 w-4 rounded-full bg-emerald-500 text-center text-xs text-white">
             {unseenRequestCount}
           </div>
         )}

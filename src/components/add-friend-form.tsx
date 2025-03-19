@@ -68,7 +68,7 @@ export default function AddFriendForm() {
       </div>
 
       {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email?.message}</p>}
-      {showSuccessState && <p className="mt-1 text-sm text-green-600">Friend invite sent!</p>}
+      {showSuccessState && <p className="mt-1 text-sm text-emerald-500">Friend invite sent!</p>}
     </form>
   )
 }

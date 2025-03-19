@@ -59,7 +59,7 @@ export default function ChatListItem({
             </p>
 
             {unseenCount > 0 && (
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500 text-xs font-medium text-white">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-xs font-medium text-white">
                 {unseenCount}
               </div>
             )}

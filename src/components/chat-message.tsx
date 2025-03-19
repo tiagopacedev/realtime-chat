@@ -21,21 +21,26 @@ export function ChatMessage({
         })}
       >
         <div
-          className={cn('mx-2 flex max-w-xs flex-col space-y-2 text-base', {
+          className={cn('mx-2 flex max-w-lg flex-col space-y-2 text-base', {
             'order-1 items-end': isCurrentUser,
             'order-2 items-start': !isCurrentUser,
           })}
         >
           <span
-            className={cn('relative inline-block rounded-lg px-4 py-2', {
-              'bg-zinc-800 text-white': isCurrentUser,
+            className={cn('relative inline-block rounded-lg p-3', {
+              'bg-emerald-500 text-white': isCurrentUser,
               'bg-zinc-100 text-zinc-900': !isCurrentUser,
               'rounded-br-none': !hasNextMessageFromSameUser && isCurrentUser,
               'rounded-bl-none': !hasNextMessageFromSameUser && !isCurrentUser,
             })}
           >
             <div className="pr-16">{message.text}</div>
-            <span className="absolute bottom-1 right-2 min-w-[65px] text-right text-xs text-zinc-400">
+            <span
+              className={cn('absolute bottom-1 right-2 min-w-[65px] text-right text-xs', {
+                'text-emerald-100': isCurrentUser,
+                'text-zinc-600': !isCurrentUser,
+              })}
+            >
               {dayjs(message.timestamp).format('h:mm A')}
             </span>
           </span>
