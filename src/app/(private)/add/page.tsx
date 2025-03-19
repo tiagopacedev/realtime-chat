@@ -1,4 +1,4 @@
-import AddFriendForm from '@/components/add-friend-form'
+import AddFriendForm from '@/components/forms/add-friend-form'
 import BackButton from '@/components/back-button'
 
 export default function Page() {
