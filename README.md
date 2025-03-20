@@ -41,4 +41,6 @@ PUSHER_APP_SECRET=your-pusher-app-secret
 npm run dev
 ```
 
-Enjoy!
+___
+
+&#8594; View [Demo](https://realtime-chat-ahu8zlv4d-tiagopacedevs-projects.vercel.app)
