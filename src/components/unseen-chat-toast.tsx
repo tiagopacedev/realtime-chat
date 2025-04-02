@@ -1,6 +1,6 @@
 import { chatHrefConstructor, cn } from '@/lib/utils'
-import Image from 'next/image'
 import toast, { type Toast } from 'react-hot-toast'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 
 interface UnseenChatToastProps {
   t: Toast
@@ -33,15 +33,10 @@ export default function UnseenChatToast({
       >
         <div className="flex items-start">
           <div className="flex-shrink-0 pt-0.5">
-            <div className="relative h-10 w-10">
-              <Image
-                fill
-                referrerPolicy="no-referrer"
-                className="rounded-full"
-                src={senderImg}
-                alt={`${senderName} profile picture`}
-              />
-            </div>
+            <Avatar className="size-10">
+              <AvatarImage src={senderImg} />
+              <AvatarFallback>{senderName.charAt(0)}</AvatarFallback>
+            </Avatar>
           </div>
 
           <div className="ml-3 flex-1">

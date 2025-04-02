@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import Image from 'next/image'
 import BackButton from '../back-button'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 interface ChatHeaderProps {
   chatPartner: User
@@ -14,15 +14,10 @@ export function ChatHeader({ chatPartner }: ChatHeaderProps) {
       <div className="relative flex items-center gap-2">
         <BackButton />
 
-        <div className="relative size-12">
-          <Image
-            fill
-            referrerPolicy="no-referrer"
-            src={chatPartner.image}
-            alt={`${chatPartner.name} profile picture`}
-            className="rounded-full"
-          />
-        </div>
+        <Avatar className="size-12">
+          <AvatarImage src={chatPartner.image} />
+          <AvatarFallback>{chatPartner.name.charAt(0)}</AvatarFallback>
+        </Avatar>
 
         <div className="flex flex-col leading-tight">
           <div className="flex items-center">

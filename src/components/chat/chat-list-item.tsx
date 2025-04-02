@@ -1,7 +1,7 @@
 'use client'
 
 import { chatHrefConstructor, cn, formatTimestamp } from '@/lib/utils'
-import Image from 'next/image'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 interface ChatListItemProps {
   friend: User
@@ -34,15 +34,10 @@ export default function ChatListItem({
         )}
       >
         {/* Avatar */}
-        <div className="relative size-12 flex-shrink-0">
-          <Image
-            src={friend.image}
-            alt={friend.name}
-            fill
-            referrerPolicy="no-referrer"
-            className="rounded-full"
-          />
-        </div>
+        <Avatar className="size-12 flex-shrink-0">
+          <AvatarImage src={friend.image} />
+          <AvatarFallback>{friend.name.charAt(0)}</AvatarFallback>
+        </Avatar>
 
         {/* Content */}
         <div className="flex min-w-0 flex-1 flex-col">

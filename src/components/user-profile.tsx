@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 
 interface UserProfileProps {
   user: User
@@ -7,15 +7,10 @@ interface UserProfileProps {
 export default function UserProfile({ user }: UserProfileProps) {
   return (
     <div className="flex flex-1 items-center gap-x-3 px-6 py-2 text-sm font-semibold leading-6 text-zinc-900">
-      <div className="relative size-10">
-        <Image
-          fill
-          referrerPolicy="no-referrer"
-          className="rounded-full"
-          src={user.image || ''}
-          alt="Profile picture"
-        />
-      </div>
+      <Avatar className="size-10">
+        <AvatarImage src={user.image} />
+        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+      </Avatar>
 
       <span className="sr-only">Your profile</span>
       <div className="flex flex-col">
