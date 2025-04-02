@@ -3,7 +3,7 @@
 import { fetchRedis } from '@/lib/redis'
 import { messageArraySchema, Message } from '@/lib/schemas/message-schema'
 
-export async function fetchChatMessages(chatId: string): Promise<Message[]> {
+export async function getChatMessages(chatId: string): Promise<Message[]> {
   try {
     const results: string[] = await fetchRedis('zrange', `chat:${chatId}:messages`, 0, -1)
     const dbMessages = results.map((message) => JSON.parse(message))

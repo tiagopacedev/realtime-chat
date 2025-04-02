@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import FriendRequests from '@/components/friend-requests'
-import { fetchFriendRequests } from '@/actions/fetch-friend-requests'
+import { getFriendRequests } from '@/actions/get-friend-requests'
 import { getCurrentUser } from '@/lib/auth'
 import BackButton from '@/components/back-button'
 
@@ -8,7 +8,7 @@ export default async function Page() {
   const user = await getCurrentUser()
   if (!user) notFound()
 
-  const incomingFriendRequests = await fetchFriendRequests(user.id)
+  const incomingFriendRequests = await getFriendRequests(user.id)
 
   return (
     <main className="h-full border bg-white p-6 md:rounded-md md:p-8">

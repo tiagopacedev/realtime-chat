@@ -2,7 +2,7 @@
 
 import { fetchRedis } from '@/lib/redis'
 
-export async function fetchFriendRequests(userId: string) {
+export async function getFriendRequests(userId: string) {
   const incomingSenderIds = (await fetchRedis(
     'smembers',
     `user:${userId}:incoming_friend_requests`,

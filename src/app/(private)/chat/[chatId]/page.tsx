@@ -5,7 +5,7 @@ import { fetchRedis } from '@/lib/redis'
 import ChatInput from '@/components/chat/chat-input'
 import ChatMessages from '@/components/chat/chat-messages'
 import { getCurrentUser } from '@/lib/auth'
-import { fetchChatMessages } from '@/actions/fetch-chat-messages'
+import { getChatMessages } from '@/actions/get-chat-messages'
 import ChatHeader from '@/components/chat/chat-header'
 
 interface ChatPageProps {
@@ -28,7 +28,7 @@ export default async function Page({ params }: ChatPageProps) {
 
   const chatPartnerRaw = await fetchRedis('get', `user:${chatPartnerId}`)
   const chatPartner = JSON.parse(chatPartnerRaw) as User
-  const initialMessages = await fetchChatMessages(chatId)
+  const initialMessages = await getChatMessages(chatId)
 
   return (
     <div className="flex h-full flex-1 flex-col justify-between border bg-white md:rounded-md">

@@ -1,6 +1,6 @@
 'use server'
 
-import { fetchIncomingRequests } from '@/actions/fetch-incoming-requests'
+import { getIncomingRequests } from '@/actions/get-incoming-requests'
 import FriendRequestsButton from '../friend-request-button'
 import { Button } from '../ui/button'
 import { SquarePen } from 'lucide-react'
@@ -15,7 +15,7 @@ interface MobileNavigationProps {
 }
 
 export default async function MobileNavigation({ user, friends }: MobileNavigationProps) {
-  const unseenRequests = await fetchIncomingRequests(user.id)
+  const unseenRequests = await getIncomingRequests(user.id)
 
   return (
     <nav className="relative flex h-full w-full grow flex-col gap-y-5 overflow-y-auto p-6 md:hidden">

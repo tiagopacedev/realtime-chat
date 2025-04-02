@@ -1,6 +1,6 @@
 'use server'
 
-import { fetchIncomingRequests } from '@/actions/fetch-incoming-requests'
+import { getIncomingRequests } from '@/actions/get-incoming-requests'
 import { getFriendsByUserId } from '@/actions/get-friends-by-user-id'
 import { getCurrentUser } from '@/lib/auth'
 import { notFound } from 'next/navigation'
@@ -18,7 +18,7 @@ export default async function Sidebar() {
   if (!user) return notFound()
 
   const friends = await getFriendsByUserId(user.id)
-  const unseenRequests = await fetchIncomingRequests(user.id)
+  const unseenRequests = await getIncomingRequests(user.id)
 
   return (
     <nav className="relative hidden h-full w-full max-w-[22rem] grow flex-col gap-y-5 overflow-y-auto rounded-md border bg-white p-6 md:flex">
